@@ -521,6 +521,8 @@
                     }
                 },
                 {
+                    minWidth: options.previewMaxWidth,
+                    minHeight: options.previewMaxHeight,
                     maxWidth: options.previewMaxWidth,
                     maxHeight: options.previewMaxHeight,
                     canvas: options.previewAsCanvas

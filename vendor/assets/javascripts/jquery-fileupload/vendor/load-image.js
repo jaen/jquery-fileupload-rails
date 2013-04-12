@@ -59,30 +59,63 @@
     loadImage.scale = function (img, options) {
         options = options || {};
         var canvas = document.createElement('canvas'),
-            width = img.width,
-            height = img.height,
+            width = options.maxWidth,
+            height = options.maxHeight,
             scale = Math.max(
                 (options.minWidth || width) / width,
                 (options.minHeight || height) / height
             );
-        if (scale > 1) {
-            width = parseInt(width * scale, 10);
-            height = parseInt(height * scale, 10);
+        // if (scale > 1) {
+        //     width = parseInt(width * scale, 10);
+        //     height = parseInt(height * scale, 10);
+        // }
+        // scale = Math.min(
+        //     (options.maxWidth || width) / width,
+        //     (options.maxHeight || height) / height
+        // );
+        // if (scale < 1) {
+        //     width = parseInt(width * scale, 10);
+        //     height = parseInt(height * scale, 10);
+        // }
+
+        var crop = true; // width == 0 || height == 0;
+
+        // not resize
+        if(img.width > width && height == 0){
+            height = img.height * (width / img.width);
         }
-        scale = Math.min(
-            (options.maxWidth || width) / width,
-            (options.maxHeight || height) / height
-        );
-        if (scale < 1) {
-            width = parseInt(width * scale, 10);
-            height = parseInt(height * scale, 10);
+
+        // check scale
+        var xscale = width  / img.width;
+        var yscale = height / img.height;
+        // var scale  = crop ? Math.max(xscale, yscale): Math.min(xscale, yscale);
+        var scale;
+        if(width < height) {
+            scale = width / img.width;
+        } else {
+            scale = height / img.height;
         }
+
+        // create empty canvas
+        var canvas = document.createElement("canvas");  
+
         if (img.getContext || (options.canvas && canvas.getContext)) {
-            canvas.width = width;
-            canvas.height = height;
-            canvas.getContext('2d')
-                .drawImage(img, 0, 0, width, height);
-            return canvas;
+            // canvas.width = options.maxWidth;
+            // canvas.height = options.maxHeight;
+            // //canvas.getContext('2d')
+            // //    .drawImage(img, 0, 0, width, height);
+            // canvas.getContext("2d")
+            //       .drawImage(img, (canvas.width - width) * -.5, (canvas.height - height) * -.5, width, height);
+            // return canvas;                
+            canvas.width  = width ? width   : parseInt(img.width  * scale);
+            canvas.height = height ? height : parseInt(img.height * scale);
+            canvas.getContext("2d").scale(scale,scale);
+
+            // crop it top center
+            canvas.getContext("2d")
+                  .drawImage(img, parseInt(((img.width * scale) - canvas.width) * -.5),
+                                  parseInt(((img.height * scale) - canvas.height) * -.5));
+            return canvas;            
         }
         img.width = width;
         img.height = height;
