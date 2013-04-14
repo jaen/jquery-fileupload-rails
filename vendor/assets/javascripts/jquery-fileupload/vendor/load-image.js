@@ -90,7 +90,7 @@
         var yscale = height / img.height;
         // var scale  = crop ? Math.max(xscale, yscale): Math.min(xscale, yscale);
         var scale;
-        if(width < height) {
+        if(img.width < img.height) {
             scale = width / img.width;
         } else {
             scale = height / img.height;
